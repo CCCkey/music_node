@@ -4,7 +4,7 @@ let md5 = require('../module/md5.js')
 
 let server = require('../module/bgServer.js') // 加载数据库处理程序
 
-// 管理员
+// 管理员 --------------
 router.post('/api/v1/admins/login',(req,res) => {
 	server.adminLogin(req.body.admin_account,req.body.admin_password)
 	.then((results) => {
@@ -28,7 +28,7 @@ router.post('/api/v1/admins/login',(req,res) => {
 	})
 })
 
-// 用户
+// 用户 --------------------
 router.get('/api/v1/users',(req,res) => { // 获取用户
 	let {offset,limit,token} = req.query
 	
@@ -69,7 +69,7 @@ router.post('/api/v1/users',(req,res) => { // 修改用户
 
 })
 
-router.post('/api/vi/users',(req,res) => { // 删除用户
+router.delete('/api/v1/users',(req,res) => { // 删除用户
 	let {user_id,token} = req.body
 	
 	if(token != md5.getToken(req.session.adminToken)){
@@ -88,6 +88,9 @@ router.post('/api/vi/users',(req,res) => { // 删除用户
 	}
 	
 })
+
+// 音乐 ---------------
+
 
 module.exports = router
 

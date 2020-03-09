@@ -47,29 +47,29 @@ let userUpdate = (user_id,user_account,user_password,email) => { // 修改用户
 	})
 }
 
-let userDelete = () => { // 删除用户列表
+let userDelete = (user_id) => { // 删除用户列表
 	return new Promise((resolve,reject) => {
-		let sql = 'SET foreign_key_checks = 0'
-		let sql02 = 'DELETE FROM `user` WHERE id = ?'
-		let sql03 = 'SET foreign_key_checks = 1'
-		let sql04 = 'SELECT @@foreign_key_checks'
+		let sql = 'SET foreign_key_checks = 0'  // 关闭外链约束
+		let sql02 = 'DELETE FROM `user` WHERE id = ?' // 删除表格
+		let sql03 = 'SET foreign_key_checks = 1'  // 打开外链约束
+		let sql04 = 'SELECT @@foreign_key_checks' // 查询外链约束
 		
 		let values = undefined
-		let values02 = [3]	
+		let values02 = [user_id]	
 		
-		// 关闭外键约束检查
+		
 		db.query(sql,values)
-		.then(results => {
-			console.log('关闭外键约束')
+		.then(results => { // 关闭外键约束检查
+			console.log('关闭外键约束') 
 			return db.query(sql02,values02)
 		})
-		.then(results => {
+		.then(results => { // 删除数据
 			resolve(results)
 			return db.query(sql03,values)
 		},err => {
 			reject(err)
 		})
-		.then(results => {
+		.then(results => { // 打开外链约束检查
 			console.log('打开外键约束')
 		})
 	})
@@ -77,46 +77,58 @@ let userDelete = () => { // 删除用户列表
 
 // 音乐相关 （music）
 
-let musicShow = () => { // 获取音乐列表
+let musicShow = (offset,limit) => { // 获取音乐列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		let sql = 'SELECT * FROM `music` LIMIT ?, ?'
+		let values = [offset,limit]
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
 
-let musicAdd = () => { // 增加音乐列表
+let musicAdd = (music_name,singer,music_data,lyric_data,music_img_data) => { // 增加音乐列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		let sql = 'INSERT INTO `music`(music_name, singer, music_data, lyric_data, music_img_data) values(?,?,?,?,?)'
+		let values = []  // 插入数据
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
 
-let musicUpdate = () => { // 修改音乐列表
+let musicUpdate = (music_name,singer,music_id) => { // 修改音乐列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		let sql = 'UPDATE `music` SET music_name = ?, singer = ? WHERE id = ?'
+		let values = [music_name,singer,music_id]
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
 
-let musicDelete = () => { // 删除音乐列表
+let musicDelete = (music_id) => { // 删除音乐列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		let sql = 'DELETE FROM `music` WHERE id = ?'
+		let values = [music_id]
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
