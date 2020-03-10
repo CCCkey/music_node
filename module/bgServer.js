@@ -2,7 +2,6 @@ const db = require('./db.js')
 
 // 管理员（admin）
 
-
 let adminLogin = (admin_account,admin_password) => {
 	return new Promise((resolve,reject) => {
 		let sql = 'SELECT id, admin_account FROM `admin` WHERE admin_account = ? AND admin_password = ?' // 根据管理员用户名和密码
@@ -22,7 +21,7 @@ let adminLogin = (admin_account,admin_password) => {
 
 let userShow = (offset,limit) => { // 获取用户列表
 	return new Promise((resolve, reject) => {
-		let sql = 'SELECT * FROM user LIMIT ? , ?'
+		let sql = 'SELECT * FROM `user` LIMIT ? , ?'
 		let values = [offset,limit]
 		
 		db.query(sql,values)
@@ -93,8 +92,8 @@ let musicShow = (offset,limit) => { // 获取音乐列表
 
 let musicAdd = (music_name,singer,music_data,lyric_data,music_img_data) => { // 增加音乐列表
 	return new Promise((resolve,reject) => {
-		let sql = 'INSERT INTO `music`(music_name, singer, music_data, lyric_data, music_img_data) values(?,?,?,?,?)'
-		let values = []  // 插入数据
+		let sql = 'INSERT INTO `music`(music_name, singer, music_url, lyric_url, music_img_url) values (?,?,?,?,?)'
+		let values = [music_name,singer,music_data,lyric_data,music_img_data]  // 插入数据
 		
 		db.query(sql,values)
 		.then(results => {
@@ -105,10 +104,10 @@ let musicAdd = (music_name,singer,music_data,lyric_data,music_img_data) => { // 
 	})
 }
 
-let musicUpdate = (music_name,singer,music_id) => { // 修改音乐列表
+let musicUpdate = (music_id,music_name,singer,music_data,lyric_data,music_img_data) => { // 修改音乐列表
 	return new Promise((resolve,reject) => {
-		let sql = 'UPDATE `music` SET music_name = ?, singer = ? WHERE id = ?'
-		let values = [music_name,singer,music_id]
+		let sql = 'UPDATE `music` SET music_name = ?, singer = ?, music_url = ?, lyric_url = ?, music_img_url = ? WHERE id = ?'
+		let values = [music_name,singer,music_data,lyric_data,music_img_data,music_id]
 		
 		db.query(sql,values)
 		.then(results => {
@@ -121,8 +120,39 @@ let musicUpdate = (music_name,singer,music_id) => { // 修改音乐列表
 
 let musicDelete = (music_id) => { // 删除音乐列表
 	return new Promise((resolve,reject) => {
-		let sql = 'DELETE FROM `music` WHERE id = ?'
-		let values = [music_id]
+		
+		let sql = 'SET foreign_key_checks = 0'  // 关闭外链约束
+		let sql02 = 'DELETE FROM `music` WHERE id = ?' // 删除表格
+		let sql03 = 'SET foreign_key_checks = 1'  // 打开外链约束
+		let sql04 = 'SELECT @@foreign_key_checks' // 查询外链约束
+		
+		let values = undefined
+		let values02 = [music_id]	
+		
+		
+		db.query(sql,values)
+		.then(results => { // 关闭外键约束检查
+			console.log('关闭外键约束') 
+			return db.query(sql02,values02)
+		})
+		.then(results => { // 删除数据
+			resolve(results)
+			return db.query(sql03,values)
+		},err => {
+			reject(err)
+		})
+		.then(results => { // 打开外链约束检查
+			console.log('打开外键约束')
+		})
+	})
+}
+
+// 评论相关
+
+let commentShow = (offset,limit) => { // 获取评论列表
+	return new Promise((resolve,reject) => {
+		let sql = 'SELECT * FROM `comment` LIMIT ?, ?'
+		let values = [offset,limit]
 		
 		db.query(sql,values)
 		.then(results => {
@@ -133,37 +163,31 @@ let musicDelete = (music_id) => { // 删除音乐列表
 	})
 }
 
-// 评论相关
-
-let commentShow = () => { // 获取评论列表
+let commentUpdate = (commentId,content) => { // 修改评论列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		let sql = 'UPDATE `comment` SET content = ? WHERE id = ?'
+		let values = [content,commentId]
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
 
-let commentUpdate = () => { // 修改评论列表
+let commentDelete = (commentId) => { // 删除评论列表
 	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
-		})
-	})
-}
-
-let commentDelete = () => { // 删除音乐列表
-	return new Promise((resolve,reject) => {
-		db.query(sql,values,(err,rows) => {
-			if(err){
-				reject(err)
-			}
-			resolve(rows)
+		
+		let sql = 'DELETE FROM `comment` WHERE id = ?' // 删除表格
+		let values = [commentId]
+		
+		db.query(sql,values)
+		.then(results => {
+			resolve(results)
+		},err => {
+			reject(err)
 		})
 	})
 }
@@ -172,5 +196,12 @@ module.exports = {
 	adminLogin,
 	userShow,
 	userUpdate,
-	userDelete
+	userDelete,
+	musicShow,
+	musicAdd,
+	musicUpdate,
+	musicDelete,
+	commentShow,
+	commentUpdate,
+	commentDelete
 }

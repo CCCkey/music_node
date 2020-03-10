@@ -33,3 +33,7 @@
 
 ### 项目启动
 - `node app.js`
+
+### 存在问题
+- session过期后，拿不到session中的id，故不能判断用户提交过来的ID
+
