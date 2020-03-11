@@ -104,10 +104,10 @@ let musicAdd = (music_name,singer,music_data,lyric_data,music_img_data) => { // 
 	})
 }
 
-let musicUpdate = (music_id,music_name,singer,music_data,lyric_data,music_img_data) => { // 修改音乐列表
+let musicUpdate = (music_id,music_name,singer,) => { // 修改音乐列表
 	return new Promise((resolve,reject) => {
-		let sql = 'UPDATE `music` SET music_name = ?, singer = ?, music_url = ?, lyric_url = ?, music_img_url = ? WHERE id = ?'
-		let values = [music_name,singer,music_data,lyric_data,music_img_data,music_id]
+		let sql = 'UPDATE `music` SET music_name = ?, singer = ?  WHERE id = ?'
+		let values = [music_name,singer,music_id]
 		
 		db.query(sql,values)
 		.then(results => {
@@ -167,6 +167,8 @@ let commentUpdate = (commentId,content) => { // 修改评论列表
 	return new Promise((resolve,reject) => {
 		let sql = 'UPDATE `comment` SET content = ? WHERE id = ?'
 		let values = [content,commentId]
+		
+		console.log('11111')
 		
 		db.query(sql,values)
 		.then(results => {

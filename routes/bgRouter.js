@@ -31,8 +31,6 @@ router.post('/api/v1/admins/login',(req,res) => {
 router.get('/api/v1/users',(req,res) => { // 获取用户
 	let {offset,limit,token} = req.query
 	
-	console.log(req.session.adminToken)
-	
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
 			code:1,
@@ -53,15 +51,17 @@ router.get('/api/v1/users',(req,res) => { // 获取用户
 router.put('/api/v1/users',(req,res) => { // 修改用户
 	let {user_id,user_account,user_password,email,token} = req.body
 	
+	console.log(req.body)
+	
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
 			code:1,
 			message:'请重新登陆',
 		})
 	}else{
-		server.userUpdate(JSON.parse(user_id),user_account,user_password,email)
+		server.userUpdate(user_id,user_account,user_password,email)
 		.then(results => {
-			if(!results.affectedId){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户修改失败',
@@ -87,9 +87,10 @@ router.delete('/api/v1/users',(req,res) => { // 删除用户
 			message:'请重新登陆',
 		})
 	}else{
-		server.userDelete(JSON.parse(user_id))
+		server.userDelete(user_id)
 		.then(results => {
-			if(!results.affectedId){ // 通过affectedID的值，判断sql语句是否操作成功
+			console.log(results)
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户删除失败',
@@ -110,13 +111,14 @@ router.delete('/api/v1/users',(req,res) => { // 删除用户
 router.get('/api/v1/musics',(req,res) => { // 获取音乐
 	let {offset,limit,token} = req.query
 	
+	console.log(req.query)
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
 			code:1,
 			message:'fail',
 		})
 	}else{
-		server.musicShow(JSON.parse(offset),JSON.parse(limit))
+		server.musicShow(JSON.parse(offset),JSON.parse(limit)) // get获取的是字符串 需要转数字
 		.then(results => {
 			res.status(200).json({
 				code:0,
@@ -138,7 +140,7 @@ router.post('/api/v1/musics',(req,res) => { // 添加音乐
 	}else{
 		server.musicAdd(music_name,singer,music_data,lyric_data,music_img_data)
 		.then(results => {
-			if(!results.affectedId){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户添加失败',
@@ -157,7 +159,7 @@ router.post('/api/v1/musics',(req,res) => { // 添加音乐
 })
 
 router.put('/api/v1/musics',(req,res) => { // 修改音乐
-	let {music_id,music_name,singer,music_data,lyric_data,music_img_data,token} = req.body
+	let {music_id,music_name,singer,token} = req.body
 	
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
@@ -165,7 +167,7 @@ router.put('/api/v1/musics',(req,res) => { // 修改音乐
 			message:'请重新登陆',
 		})
 	}else{
-		server.musicUpdate(JSON.parse(music_id),music_name,singer,music_data,lyric_data,music_img_data)
+		server.musicUpdate(music_id,music_name,singer)
 		.then(results => {
 			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
 				res.status(200).json({
@@ -192,7 +194,7 @@ router.delete('/api/v1/musics',(req,res) => { // 删除音乐
 			message:'请重新登陆',
 		})
 	}else{
-		server.musicDelete(JSON.parse(music_id))
+		server.musicDelete(music_id)
 		.then(results => {
 			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
 				res.status(200).json({
@@ -242,9 +244,10 @@ router.put('/api/v1/comments',(req,res) => { // 修改评论
 			message:'请重新登陆',
 		})
 	}else{
-		server.commentUpdate(JSON.parse(comment_id),content)
+		server.commentUpdate(comment_id,content)
 		.then(results => {
-			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
+			console.log('results:' + results)
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户修改失败'
@@ -269,7 +272,7 @@ router.delete('/api/v1/comments',(req,res) => { // 删除评论
 			message:'请重新登陆',
 		})
 	}else{
-		server.commentDelete(JSON.parse(comment_id))
+		server.commentDelete(comment_id)
 		.then(results => {
 			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
 				res.status(200).json({
