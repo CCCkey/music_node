@@ -31,6 +31,8 @@ router.post('/api/v1/admins/login',(req,res) => {
 router.get('/api/v1/users',(req,res) => { // 获取用户
 	let {offset,limit,token} = req.query
 	
+	console.log(req.session.adminToken)
+	
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
 			code:1,
