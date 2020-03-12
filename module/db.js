@@ -21,8 +21,7 @@ exports.query = (sql,values) => {
 			conn.query(sql,values,(err,results) => { // 使用sql查询语句
 				conn.release();//释放数据库连接
 				if(err){
-					reject(err)
-					return
+					throw err
 				}
 				resolve(results)
 			})

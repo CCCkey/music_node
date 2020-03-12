@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const router = require('./routes/bgRouter.js') // 引入路由
 
+
 // 启动静态资源服务器，代理public文件夹以views文件夹
 app.use('/public',express.static('public'))
 app.use(express.static('view'))
@@ -31,7 +32,6 @@ app.all('*', function (req, res, next) {
   res.header('Content-Type', 'application/json;charset=utf-8')
   next()
 })
-
 
 app.use(router) // 加载路由模块
 

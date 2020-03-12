@@ -90,10 +90,10 @@ let musicShow = (offset,limit) => { // 获取音乐列表
 	})
 }
 
-let musicAdd = (music_name,singer,music_data,lyric_data,music_img_data) => { // 增加音乐列表
+let musicAdd = (music_name,singer,music_url,lyric_url,music_img_url) => { // 增加音乐列表
 	return new Promise((resolve,reject) => {
 		let sql = 'INSERT INTO `music`(music_name, singer, music_url, lyric_url, music_img_url) values (?,?,?,?,?)'
-		let values = [music_name,singer,music_data,lyric_data,music_img_data]  // 插入数据
+		let values = [music_name,singer,music_url,lyric_url,music_img_url]  // 插入数据
 		
 		db.query(sql,values)
 		.then(results => {
