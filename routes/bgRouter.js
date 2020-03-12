@@ -61,7 +61,7 @@ router.put('/api/v1/users',(req,res) => { // 修改用户
 	}else{
 		server.userUpdate(user_id,user_account,user_password,email)
 		.then(results => {
-			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户修改失败',
@@ -115,7 +115,7 @@ router.get('/api/v1/musics',(req,res) => { // 获取音乐
 	if(!req.session.adminToken || token != md5.getToken(req.session.adminToken)){
 		res.status(200).json({
 			code:1,
-			message:'fail',
+			message:'请重新登陆',
 		})
 	}else{
 		server.musicShow(JSON.parse(offset),JSON.parse(limit)) // get获取的是字符串 需要转数字
@@ -140,7 +140,7 @@ router.post('/api/v1/musics',(req,res) => { // 添加音乐
 	}else{
 		server.musicAdd(music_name,singer,music_data,lyric_data,music_img_data)
 		.then(results => {
-			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户添加失败',
@@ -169,7 +169,7 @@ router.put('/api/v1/musics',(req,res) => { // 修改音乐
 	}else{
 		server.musicUpdate(music_id,music_name,singer)
 		.then(results => {
-			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:2,
 					message:'用户修改失败'
@@ -196,7 +196,7 @@ router.delete('/api/v1/musics',(req,res) => { // 删除音乐
 	}else{
 		server.musicDelete(music_id)
 		.then(results => {
-			if(!results.affectedRows){ // 通过affectedID的值，判断sql语句是否操作成功
+			if(!results.affectedRows){ // 通过affectedRows的值，判断sql语句是否操作成功
 				res.status(200).json({
 					code:3,
 					message:'删除用户失败',
