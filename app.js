@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const session = require('express-session')
-const router = require('./routes/bgRouter.js') // 引入路由
+const router = require('./routes/routerMs.js') // 引入路由
 
 
 // 启动静态资源服务器，代理public文件夹以views文件夹
@@ -23,18 +23,7 @@ app.use(session({
 	}
 }))
 
-// 允许跨域
-app.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8080')
-  res.header('Access-Control-Allow-Credentials','true')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  res.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE,OPITONS')
-  res.header('Content-Type', 'application/json;charset=utf-8')
-  next()
-})
-
 app.use(router) // 加载路由模块
-
 
 app.listen(3000,() => {
 	console.log(`服务器启动,监听3000端口`)
