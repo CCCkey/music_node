@@ -1,51 +1,60 @@
-# 项目
-### 项目安装插件
--  express(构建服务器)
--  md5（加密）
--  mysql（连接服务器）
--  multer (处理form-data:值得注意的是multer使用postman的时候中文名会乱码)
-
-
 ### 项目启动
 - `node app.js`
 
-### 项目结构目录说明
-| -- bin（服务器批处理文件）
+### 安装依赖
+- express
+- body-parse
+  - 解析post请求
+- multer
+  - 文件上传
+- mysql
+  - 数据库
+- express-session
+  - 设置session
 
-| -- module（自定义模块）
+### 相关操作说明
 
-| -- | -- db.js（服务器连接封装）
+- 文件命名
+  - A：after end 后台
+  - F：front end 前台
 
-| -- | -- service.js（服务器连接封装）
+- multer
+  
+  - multer使用postman测试存在中文名乱码问题
+- 数据库是否操作成功
+  - 查询
+    
+    - 通过返回的数组是否为空判断
+  - 更新（UPDATE）
+    - 通过返回对象中的affectedRows判断
+      - 更改的内容没有变化：affectedRows = 1
+  - 删除（UPDATE：更改del=1）
+    - 通过返回对象中的changedRows判断
+      - 更改的内容没有变化：changedRows = 0
+      
+      - 当数据已经删除（del=1），此时不允许用户再次删除数据
+      
+        
 
-| -- node_modules（第三方模块）
+### music_express_01
 
-| -- public（静态资源）
+#### code含义
 
-| -- routes（路由文件）
+| 数字 | 信息                            |
+| ---- | ------------------------------- |
+| 0    | 成功                            |
+| 1    | 未登录                          |
+| 2    | sql语句操作失败（未返回正确值） |
 
-| -- | -- all.route.js（路由处理文件）
+**music_express_01中服务器和数据库错误用throw解决，并未给前台返回数据**
 
-| -- views（页面文件）
+### music_express_02
 
-| -- app.js（项目入口）
+#### err含义
 
-| -- package.json（包管理文件）
-
-| -- package-lock.json（包管理文件，详细说明）
-
-| -- readme.md（项目说明文件）
-
-### code含义
-- 0
-  - 代表正常
-- 1
-  - 未登陆
-- 2
-  - 数据库操作失败
-- 3
-  - 代码用户名存在（用于注册接口）
-
-### 存在问题
-- session过期后，拿不到session中的id，故不能判断用户提交过来的ID
+| 数字 | 信息                |
+| ---- | ------------------- |
+| 1    | 服务器/数据库错误   |
+| 2    | 用户名重复          |
+| 3    | 未登录（token错误） |
 

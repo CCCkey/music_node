@@ -66,9 +66,18 @@ let musicId = (id) => { // 歌曲查找
 		let sql = 'SELECT id,music_name,singer,music_url,lyric_url,music_img_url,click_number from `music` WHERE id = ? AND del=0'
 		let values = [id]
 		
+		let sql02 = 'UPDATE `music` SET click_number = click_number + 1' // sql自增
+		let values = []
+		
 		db.query(sql,values)
 		.then(results => {
-			resolve(results)
+			if(results.length != 0){
+				resolve(results)
+			}
+			return db.query(sql02,values) // 增加点击量
+		})
+		.catch(err => {
+			reject(err)
 		})
 	})
 }
